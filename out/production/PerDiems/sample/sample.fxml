@@ -1,7 +1,26 @@
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.layout.GridPane?>
-<GridPane fx:controller="sample.Controller"
-          xmlns:fx="http://javafx.com/fxml">
+<?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
 
-</GridPane>
+<BorderPane prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+   <left>
+       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+           <opaqueInsets>
+               <Insets left="16.0" right="16.0"/>
+           </opaqueInsets>
+           <Label text="Start Date:"/>
+           <DatePicker prefHeight="55.0" prefWidth="100.0"/>
+           <Label text="Start Time:"/>
+           <TextField promptText="00:00"/>
+           <Label text="End Date:"/>
+           <DatePicker prefHeight="55.0" prefWidth="100.0"/>
+           <Label text="End Time:"/>
+           <TextField promptText="00:00"/>
+       </VBox>
+   </left>
+</BorderPane>
