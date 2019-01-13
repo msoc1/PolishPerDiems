@@ -1,0 +1,13 @@
+.custom-label {
+    -fx-background-color: lightgray ;
+    -fx-padding: 2, 0, 2, 5;
+    -fx-min-width: 150;
+    -fx-alignment: center;
+}
+
+.meal-label {
+    -fx-background-color: white ;
+    -fx-padding: 2, 0, 2, 5;
+    -fx-min-width: 150;
+    -fx-alignment: center;
+}
