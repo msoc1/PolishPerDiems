@@ -1,4 +1,4 @@
-package sample;
+package com.stockoverflow.msoc1;
 
 import javafx.scene.control.CheckBox;
 
@@ -8,8 +8,7 @@ public class DaysCheckBox {
     private CheckBox lunchCheck;
     private CheckBox dinnerCheck;
     private int mealClass;
-    private int column;
-    private int row;
+
 
     public DaysCheckBox(int mealClass, CheckBox breakfastCheck, CheckBox lunchCheck, CheckBox dinnerCheck) {
         this.mealClass = mealClass;
@@ -35,11 +34,4 @@ public class DaysCheckBox {
     }
 
 
-    public int getColumn() {
-        return column;
-    }
-
-    public int getRow() {
-        return row;
-    }
 }

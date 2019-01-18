@@ -1,4 +1,4 @@
-package sample;
+package com.stockoverflow.msoc1;
 
 import javafx.scene.control.CheckBox;
 

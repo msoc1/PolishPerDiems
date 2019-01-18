@@ -1,8 +1,6 @@
-package sample;
+package com.stockoverflow.msoc1;
 
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -129,14 +127,21 @@ public class Main extends Application {
     private static void bottomButtons() {
         HBox bottomHBox = new HBox();
         borderPane.setBottom(bottomHBox);
+        countDays.setMinWidth(200);
+        countDays.setMinHeight(40);
+        countDays.setFont(Font.font(16));
         bottomHBox.getChildren().add(countDays);
         HBox.setMargin(countDays, new Insets(24, 0, 24, 44));
         Region leftRegion = new Region();
-        leftRegion.setMinWidth(432);
+        leftRegion.setMinWidth(332);
         bottomHBox.getChildren().add(leftRegion);
         bottomHBox.setAlignment(Pos.TOP_LEFT);
         bottomHBox.getChildren().add(checkForMeals);
+        checkForMeals.setMinHeight(40);
+        checkForMeals.setMinWidth(200);
+        checkForMeals.setFont(Font.font(16));
         HBox.setMargin(checkForMeals, new Insets(24, 0, 0, 0));
+        checkForMeals.setDisable(true);
         Region rightRegion = new Region();
 
         rightRegion.setMinWidth(405);
@@ -151,44 +156,44 @@ public class Main extends Application {
         HBox topHBox = new HBox();
         borderPane.setTop(topHBox);
         Label setUpDaysLabel = new Label("Please enter date and time");
+        setUpDaysLabel.setFont(Font.font(16));
         topHBox.getChildren().add(setUpDaysLabel);
-        HBox.setMargin(setUpDaysLabel, new Insets(24, 0, 24, 44));
+        HBox.setMargin(setUpDaysLabel, new Insets(12, 0, 12, 44));
         Region leftRegion = new Region();
-        leftRegion.setMinWidth(372);
+        leftRegion.setMinWidth(272);
         topHBox.getChildren().add(leftRegion);
         topHBox.setAlignment(Pos.TOP_LEFT);
         Label checkMealsLabel = new Label("Check meals which you have eaten");
+        checkMealsLabel.setFont(Font.font(16));
         topHBox.getChildren().add(checkMealsLabel);
-        HBox.setMargin(checkMealsLabel, new Insets(24, 0, 0, 0));
+        HBox.setMargin(checkMealsLabel, new Insets(12, 0, 0, 0));
         Region rightRegion = new Region();
-        rightRegion.setMinWidth(325);
+        rightRegion.setMinWidth(275);
         topHBox.getChildren().add(rightRegion);
         Label teslaInputLabel = new Label("Enter below values to Tesla");
+        teslaInputLabel.setFont(Font.font(16));
         topHBox.getChildren().add(teslaInputLabel);
-        HBox.setMargin(teslaInputLabel, new Insets(24, 40, 0, 0));
+        HBox.setMargin(teslaInputLabel, new Insets(12, 40, 0, 0));
 
 
     }
 
     @Override
     public void start(final Stage primaryStage) {
-        countDays.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                boxy.clear();
-                rightGridPane.getChildren().clear();
-                daysEntitled = (checkTravelTime());
-                Main.this.centerScrollPane(daysEntitled);
-                teslaVBOX();
+        countDays.setOnAction(event -> {
+            boxy.clear();
+            rightGridPane.getChildren().clear();
+            daysEntitled = (checkTravelTime());
+            Main.this.centerScrollPane(daysEntitled);
+            teslaVBOX();
+            checkForMeals.setDisable(false);
 
-            }
         });
-        checkForMeals.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                clearLabels();
-                checkIfMealsSelected(boxy);
-            }
+        checkForMeals.setOnAction(event -> {
+            clearLabels();
+            checkIfMealsSelected(boxy);
+            checkForMeals.setDisable(true);
+
         });
         borderPane.setCenter(sp);
         dateAndTimeVBox();
@@ -198,7 +203,7 @@ public class Main extends Application {
 
         primaryStage.setTitle("Per Diem Calculator");
         primaryStage.setScene(new Scene(borderPane, 1380, 920));
-        primaryStage.setResizable(false);
+        // primaryStage.setResizable(false);
         primaryStage.show();
     }
 
@@ -206,6 +211,7 @@ public class Main extends Application {
 
         //View for full day travel
         Label amountLabelFullDay = new Label("Full Day");
+        amountLabelFullDay.setFont(Font.font(16));
         rightGridPane.add(amountLabelFullDay, 2, 0);
 
         amountLabelFullDayMoneyAmount.getStyleClass().add("custom-label");
@@ -222,6 +228,7 @@ public class Main extends Application {
         //View for 12hour travel
 
         Label amountLabel12hTravel = new Label("12h Travel");
+        amountLabel12hTravel.setFont(Font.font(16));
         rightGridPane.add(amountLabel12hTravel, 2, 4);
 
         Label breakfast12 = new Label("Breakfast");
@@ -269,6 +276,7 @@ public class Main extends Application {
 
         Label amountLabel8to12hTravel = new Label("8-12h Travel");
         rightGridPane.add(amountLabel8to12hTravel, 2, 13);
+        amountLabel8to12hTravel.setFont(Font.font(16));
 
         Label breakfast8to12 = new Label("Breakfast");
         rightGridPane.add(breakfast8to12, 0, 14);
@@ -328,6 +336,7 @@ public class Main extends Application {
         //View for 8hour travel
 
         Label amountLabel8hTravel = new Label("<8 Travel");
+        amountLabel8hTravel.setFont(Font.font(16));
         rightGridPane.add(amountLabel8hTravel, 2, 22);
 
         Label breakfast8t = new Label("Breakfast");
@@ -380,10 +389,7 @@ public class Main extends Application {
         borderPane.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
         rightGridPane.setHgap(10);
         rightGridPane.setVgap(5);
-        createFullDayView();
-        create8to12hView();
-        create12hView();
-        create8hView();
+
         rightSideVBox.getChildren().add(rightGridPane);
     }
 
@@ -520,6 +526,8 @@ public class Main extends Application {
     private void checkIfMealsSelected(ArrayList<DaysCheckBox> arrayList) {
         int bNum = 0, lNum = 0, dNum = 0, remainder = 0, fullDay = 0;
 
+
+
         for (DaysCheckBox anArrayList : arrayList) {
 
 
@@ -527,11 +535,17 @@ public class Main extends Application {
             String amountTesla = "Amounts calculated in Tesla";
             if (anArrayList.getMealClass() == DAYABOVE12HOURS && !anArrayList.getBreakfastCheck().isSelected() &&
                     !anArrayList.getLunchCheck().isSelected() && !anArrayList.getDinnerCheck().isSelected()) {
+
+
                 amountLabelFullDayMoneyAmount.setText(amountTesla);
                 amountLabelFullDayCountry.setText(countryTesla);
                 fullDay++;
+                if(fullDay == 1) {
+                    createFullDayView();
+                }
 
             } else if (anArrayList.getMealClass() == DAYABOVE12HOURS) {
+
                 if (!anArrayList.getBreakfastCheck().isSelected()) {
                     amountLabel12hTravelMoneyAmountBreakfast.setText(amountTesla);
                     amountLabel12hTravelCountryBreakfast.setText(countryTesla);
@@ -550,8 +564,12 @@ public class Main extends Application {
                 amountLabel12hTravelMoneyAmountRemainder.setText(amountTesla);
                 amountLabel12hTravelCountryRemainder.setText(countryTesla);
                 remainder++;
+                if(remainder==1) {
+                    create12hView();
+                }
 
             } else if (anArrayList.getMealClass() == DAYBELOW8HOURS) {
+                create8hView();
                 if (!anArrayList.getBreakfastCheck().isSelected()) {
                     amountLabel8hTravelMealAmountBreakfast.setText("1");
                     amountLabel8hTravelMoneyAmountBreakfast.setText(amountTesla);
@@ -572,6 +590,8 @@ public class Main extends Application {
                 amountLabel8hTravelCountryRemainder.setText(countryTesla);
 
             } else if (anArrayList.getMealClass() == DAYBEBELOW12HOURS) {
+                create8to12hView();
+
                 if (!anArrayList.getBreakfastCheck().isSelected()) {
                     amountLabel8to12hTravelMealAmountBreakfast.setText("1");
                     amountLabel8to12hTravelMoneyAmountBreakfast.setText(amountTesla);

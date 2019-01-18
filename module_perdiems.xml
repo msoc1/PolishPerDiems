@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_perdiems" default="compile.module.perdiems">
+  <dirname property="module.perdiems.basedir" file="${ant.file.module_perdiems}"/>
+  
+  <property name="module.jdk.home.perdiems" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.perdiems" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.perdiems" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.perdiems" value="-encoding UTF-8 -source 7 -target 7 ${compiler.args}"/>
+  
+  <property name="perdiems.output.dir" value="${module.perdiems.basedir}/out/production/PerDiems"/>
+  <property name="perdiems.testoutput.dir" value="${module.perdiems.basedir}/out/test/PerDiems"/>
+  
+  <path id="perdiems.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="perdiems.module.production.classpath">
+    <path refid="${module.jdk.classpath.perdiems}"/>
+  </path>
+  
+  <path id="perdiems.runtime.production.module.classpath">
+    <pathelement location="${perdiems.output.dir}"/>
+  </path>
+  
+  <path id="perdiems.module.classpath">
+    <path refid="${module.jdk.classpath.perdiems}"/>
+    <pathelement location="${perdiems.output.dir}"/>
+  </path>
+  
+  <path id="perdiems.runtime.module.classpath">
+    <pathelement location="${perdiems.testoutput.dir}"/>
+    <pathelement location="${perdiems.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.perdiems">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.perdiems">
+    <patternset refid="excluded.from.module.perdiems"/>
+  </patternset>
+  
+  <path id="perdiems.module.sourcepath">
+    <dirset dir="${module.perdiems.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.perdiems" depends="compile.module.perdiems.production,compile.module.perdiems.tests" description="Compile module PerDiems"/>
+  
+  <target name="compile.module.perdiems.production" depends="register.custom.compilers" description="Compile module PerDiems; production classes">
+    <mkdir dir="${perdiems.output.dir}"/>
+    <javac2 destdir="${perdiems.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.perdiems}/javac">
+      <compilerarg line="${compiler.args.perdiems}"/>
+      <bootclasspath refid="perdiems.module.bootclasspath"/>
+      <classpath refid="perdiems.module.production.classpath"/>
+      <src refid="perdiems.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.perdiems"/>
+    </javac2>
+    
+    <copy todir="${perdiems.output.dir}">
+      <fileset dir="${module.perdiems.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.perdiems.tests" depends="register.custom.compilers,compile.module.perdiems.production" description="compile module PerDiems; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.perdiems" description="cleanup module">
+    <delete dir="${perdiems.output.dir}"/>
+    <delete dir="${perdiems.testoutput.dir}"/>
+  </target>
+</project>
