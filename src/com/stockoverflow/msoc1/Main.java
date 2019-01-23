@@ -9,6 +9,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.util.converter.DateTimeStringConverter;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -77,10 +78,52 @@ public class Main extends Application {
     private int columnIndex = 0;
     private int rowIndex = 1;
     private long reminder;
+    private static DateTimeStringConverter df = new DateTimeStringConverter();
+    private static Date dateObj1;
+    private long datt;
+
 
     public static void main(String[] args) {
         launch(args);
 
+    }
+
+    @Override
+    public void start(final Stage primaryStage) {
+        borderPane.setCenter(sp);
+        sp.setFitToWidth(true);
+        sp.setFitToHeight(true);
+
+
+        countDays.setOnAction(event -> {
+            boxy.clear();
+            rightGridPane.getChildren().clear();
+            daysEntitled = (checkTravelTime());
+            centerScrollPane(daysEntitled);
+          //  teslaVBOX();
+            checkForMeals.setDisable(false);
+            sp.setVvalue((sp.getContent().getBoundsInLocal().getMaxY() + 181) );
+
+            System.out.println(" bounds " + sp.getContent().getBoundsInLocal().getMaxY());
+
+
+        });
+        checkForMeals.setOnAction(event -> {
+            clearLabels();
+            checkIfMealsSelected(boxy);
+            checkForMeals.setDisable(true);
+
+        });
+
+        dateAndTimeVBox();
+        bottomButtons();
+        topLabels();
+        teslaVBOX();
+
+
+        primaryStage.setTitle("Per Diem Calculator");
+        primaryStage.setScene(new Scene(borderPane, 1420, 920));
+        primaryStage.show();
     }
 
     private static void dateAndTimeVBox() {
@@ -114,14 +157,11 @@ public class Main extends Application {
         leftSideVBox.getChildren().add(endDatePicker);
         leftSideVBox.getChildren().add(endTimeLabel);
         leftSideVBox.getChildren().add(endTimeTextField);
-
         Label timeOfTravel = new Label("Your time of travel:");
         VBox.setMargin(timeOfTravel, new Insets(50, 0, 0, 0));
         leftSideVBox.getChildren().add(timeOfTravel);
         VBox.setMargin(daysAndHoursOfTravel, new Insets(5, 0, 0, 0));
         leftSideVBox.getChildren().add(daysAndHoursOfTravel);
-
-
     }
 
     private static void bottomButtons() {
@@ -143,13 +183,10 @@ public class Main extends Application {
         HBox.setMargin(checkForMeals, new Insets(24, 0, 0, 0));
         checkForMeals.setDisable(true);
         Region rightRegion = new Region();
-
         rightRegion.setMinWidth(405);
         bottomHBox.getChildren().add(rightRegion);
         //bottomHBox.getChildren().add(saveAsPDF);
         HBox.setMargin(saveAsPDF, new Insets(24, 0, 0, 0));
-
-
     }
 
     private static void topLabels() {
@@ -174,38 +211,8 @@ public class Main extends Application {
         teslaInputLabel.setFont(Font.font(16));
         topHBox.getChildren().add(teslaInputLabel);
         HBox.setMargin(teslaInputLabel, new Insets(12, 40, 0, 0));
-
-
     }
 
-    @Override
-    public void start(final Stage primaryStage) {
-        countDays.setOnAction(event -> {
-            boxy.clear();
-            rightGridPane.getChildren().clear();
-            daysEntitled = (checkTravelTime());
-            Main.this.centerScrollPane(daysEntitled);
-            teslaVBOX();
-            checkForMeals.setDisable(false);
-
-        });
-        checkForMeals.setOnAction(event -> {
-            clearLabels();
-            checkIfMealsSelected(boxy);
-            checkForMeals.setDisable(true);
-
-        });
-        borderPane.setCenter(sp);
-        dateAndTimeVBox();
-        bottomButtons();
-        topLabels();
-        teslaVBOX();
-
-        primaryStage.setTitle("Per Diem Calculator");
-        primaryStage.setScene(new Scene(borderPane, 1380, 920));
-        // primaryStage.setResizable(false);
-        primaryStage.show();
-    }
 
     private void createFullDayView() {
 
@@ -382,7 +389,7 @@ public class Main extends Application {
     private void teslaVBOX() {
         VBox rightSideVBox = new VBox();
         rightSideVBox.setPrefHeight(920);
-        rightSideVBox.setMinWidth(400);
+        rightSideVBox.setMinWidth(340);
         borderPane.setRight(rightSideVBox);
         BorderPane.setAlignment(rightSideVBox, Pos.CENTER);
         rightSideVBox.setAlignment(Pos.TOP_CENTER);
@@ -391,52 +398,9 @@ public class Main extends Application {
         rightGridPane.setVgap(5);
 
         rightSideVBox.getChildren().add(rightGridPane);
-    }
-
-    private void centerScrollPane(int daysEntitledToTravel) {
-        sp.setFitToWidth(true);
-        int row;
-        for (row = 0; row < daysEntitledToTravel; row++) {
-            columnIndex++;
-            if (row % 7 == 0) {
-                rowIndex += 4;
-                columnIndex = 0;
-                Region topRegion = new Region();
-                topRegion.setMinHeight(75);
-                root.add(topRegion, 0, rowIndex);
-                rowIndex++;
-            }
-            Label dayLabel = new Label("Day " + (row + 1));
-            dayLabel.setWrapText(true);
-            dayLabel.setMinSize(75, 15);
-            root.add(dayLabel, columnIndex, rowIndex);
-            root.setHgap(25);
-            //
-            CheckBox breakfast = new CheckBox("Breakfast");
-            root.add(breakfast, columnIndex, rowIndex + 1);
-            //
-            CheckBox lunch = new CheckBox("Lunch");
-            root.add(lunch, columnIndex, rowIndex + 2);
-            //
-            CheckBox dinner = new CheckBox("Dinner");
-            root.add(dinner, columnIndex, rowIndex + 3);
-
-            boxy.add(new DaysCheckBox(DAYABOVE12HOURS, breakfast, lunch, dinner));
-        }
-        if (reminder != 0) {
-            remainderDays(row, reminder);
-        }
-        rowIndex += 4;
-
-        Region bottomRegion = new Region();
-        bottomRegion.setMinHeight(1);
-        bottomRegion.setMinWidth((sp.getWidth()));
-        GridPane.setMargin(bottomRegion, new Insets(40, 0, 0, 0));
-        GridPane.setColumnSpan(bottomRegion, 7);
-        bottomRegion.setStyle("-fx-background-color: #000000");
-        root.add(bottomRegion, 0, rowIndex);
 
     }
+
 
     private int checkTravelTime() {
         String format = "yyyy-MM-ddHH:mm";
@@ -446,8 +410,10 @@ public class Main extends Application {
         try {
             String date1 = String.valueOf(startDatePicker.getValue());
             String date2 = String.valueOf(endDatePicker.getValue());
-            Date dateObj1 = sdf.parse(date1 + "" + String.valueOf(startTimeTextField.getText()));
+            dateObj1 = sdf.parse(date1 + "" + String.valueOf(startTimeTextField.getText()));
             Date dateObj2 = sdf.parse(date2 + " " + String.valueOf(endTimeTextField.getText()));
+
+            System.out.println(df.toString(dateObj1));
 
             long diff = ((dateObj2.getTime() - dateObj1.getTime()));
             if (diff <= 0) {
@@ -472,7 +438,81 @@ public class Main extends Application {
         return days;
     }
 
+
+    private void centerScrollPane(int daysEntitledToTravel) {
+        int row;
+
+        Date nextDay = dateObj1;
+        datt = nextDay.getTime();
+
+
+        for (row = 0; row < daysEntitledToTravel; row++) {
+            columnIndex++;
+            if (row % 7 == 0) {
+                rowIndex += 4;
+                columnIndex = 0;
+                Region topRegion = new Region();
+                topRegion.setMinHeight(75);
+                root.add(topRegion, 0, rowIndex);
+                rowIndex++;
+            }
+
+            String pattern = "EEE, dd/MMM/yyyy";
+            SimpleDateFormat simpleDateFormat =
+                    new SimpleDateFormat(pattern, new Locale("en", "EN"));
+
+            nextDay.setTime(datt);
+
+            String date = simpleDateFormat.format(nextDay);
+            // System.out.println(date);
+
+            Label dayLabel = new Label(date);
+            dayLabel.setWrapText(true);
+            dayLabel.setMinSize(75, 15);
+            root.add(dayLabel, columnIndex, rowIndex);
+            root.setHgap(25);
+            //
+            CheckBox breakfast = new CheckBox("Breakfast");
+            root.add(breakfast, columnIndex, rowIndex + 1);
+            //
+            CheckBox lunch = new CheckBox("Lunch");
+            root.add(lunch, columnIndex, rowIndex + 2);
+            //
+            CheckBox dinner = new CheckBox("Dinner");
+            root.add(dinner, columnIndex, rowIndex + 3);
+
+            boxy.add(new DaysCheckBox(DAYABOVE12HOURS, breakfast, lunch, dinner));
+
+            datt += 86_400_000;
+        }
+        if (reminder != 0) {
+            remainderDays(row, reminder);
+
+        }
+        rowIndex += 4;
+
+        Region bottomRegion = new Region();
+        bottomRegion.setMinHeight(1);
+        bottomRegion.setMinWidth((sp.getWidth()));
+        GridPane.setMargin(bottomRegion, new Insets(40, 0, 0, 0));
+        GridPane.setColumnSpan(bottomRegion, 7);
+        bottomRegion.setStyle("-fx-background-color: #000000");
+        root.add(bottomRegion, 0, rowIndex);
+
+    }
+
     private void remainderDays(int row, long remainder) {
+
+        Date nextDay = dateObj1;
+        //   datt = nextDay.getTime();
+        // datt+=86_400_000;
+        String pattern = "EEE, dd/MMM/yyyy";
+        SimpleDateFormat simpleDateFormat =
+                new SimpleDateFormat(pattern, new Locale("en", "EN"));
+
+        nextDay.setTime(datt);
+
+        String date = simpleDateFormat.format(nextDay);
 
         columnIndex++;
         row++;
@@ -486,7 +526,7 @@ public class Main extends Application {
         }
         Label dayLabel = new Label();
         dayLabel.setWrapText(true);
-        dayLabel.setText("Day " + row);
+        dayLabel.setText(date);
         dayLabel.setMinSize(75, 15);
         GridPane.setColumnSpan(dayLabel, 2);
         root.add(dayLabel, columnIndex, rowIndex);
@@ -525,22 +565,17 @@ public class Main extends Application {
 
     private void checkIfMealsSelected(ArrayList<DaysCheckBox> arrayList) {
         int bNum = 0, lNum = 0, dNum = 0, remainder = 0, fullDay = 0;
-
-
+        String countryTesla = "Select country in Tesla";
+        String amountTesla = "Amounts calculated in Tesla";
 
         for (DaysCheckBox anArrayList : arrayList) {
 
-
-            String countryTesla = "Select country in Tesla";
-            String amountTesla = "Amounts calculated in Tesla";
             if (anArrayList.getMealClass() == DAYABOVE12HOURS && !anArrayList.getBreakfastCheck().isSelected() &&
                     !anArrayList.getLunchCheck().isSelected() && !anArrayList.getDinnerCheck().isSelected()) {
-
-
                 amountLabelFullDayMoneyAmount.setText(amountTesla);
                 amountLabelFullDayCountry.setText(countryTesla);
                 fullDay++;
-                if(fullDay == 1) {
+                if (fullDay == 1) {
                     createFullDayView();
                 }
 
@@ -564,7 +599,7 @@ public class Main extends Application {
                 amountLabel12hTravelMoneyAmountRemainder.setText(amountTesla);
                 amountLabel12hTravelCountryRemainder.setText(countryTesla);
                 remainder++;
-                if(remainder==1) {
+                if (remainder == 1) {
                     create12hView();
                 }
 
@@ -611,8 +646,6 @@ public class Main extends Application {
                 amountLabel8to12hTravelMoneyAmountRemainder.setText(amountTesla);
                 amountLabel8to12hTravelCountryRemainder.setText(countryTesla);
             }
-
-
         }
         if (fullDay != 0)
             amountLabelFullDayMealAmount.setText(String.valueOf(fullDay));
